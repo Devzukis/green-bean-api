@@ -1,0 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Azuki {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tokenId   Int      @unique
+  canClaim  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
