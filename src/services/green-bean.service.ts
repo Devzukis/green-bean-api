@@ -31,7 +31,13 @@ export class GreenBeanService {
     return data[0];
   }
 
-  async createAzuki({ tokenId, canClaim }: Prisma.AzukiCreateInput) {
+  async createAzuki({
+    tokenId,
+    canClaim,
+  }: {
+    tokenId: number;
+    canClaim: boolean;
+  }) {
     return this.prisma.azuki.upsert({
       where: { tokenId },
       create: { tokenId, canClaim },
