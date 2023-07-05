@@ -6,10 +6,19 @@
 app = "green-bean-checker"
 primary_region = "lax"
 
+[processes]
+  web = "pnpm start:prod"
+  indexer = "node dist/standalone/green-bean-indexer.js"
+
 [http_service]
   internal_port = 3000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["app"]
+  processes = ["web"]
+
+[[services]]
+  processes = ["indexer"]
+  auto_stop_machines = false
+  min_machines_running = 1
