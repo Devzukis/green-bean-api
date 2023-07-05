@@ -23,17 +23,21 @@ async function bootstrap() {
       addresses: [{ to: GREEN_BEAN_ADDRESS }],
     },
     (tx) => {
-      console.log(tx);
-      const value = decodeFunctionData({
-        abi: greenBeanAbi,
-        data: tx.data as `0x${string}`,
-      });
-      console.log(value);
-      if (value.functionName === 'claim') {
-        for (const tokenId of value.args) {
-          console.log(tokenId);
-          this.greenBeanService.updateAzuki({ tokenId, canClaim: false });
+      try {
+        console.log(JSON.stringify(tx));
+        const value = decodeFunctionData({
+          abi: greenBeanAbi,
+          data: tx.input as `0x${string}`,
+        });
+        console.log(value);
+        if (value.functionName === 'claim') {
+          for (const tokenId of value.args) {
+            console.log(tokenId);
+            this.greenBeanService.updateAzuki({ tokenId, canClaim: false });
+          }
         }
+      } catch (err) {
+        console.error(err);
       }
     },
   );
