@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { GreenBeanService } from '../services/green-bean.service';
 
+// Initialize the db with canClaim statuses for all Azukis
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const greenBeanService = app.get(GreenBeanService);
