@@ -7,6 +7,7 @@ import { decodeFunctionData } from 'viem';
 import { AppModule } from '../app.module';
 import { GREEN_BEAN_ADDRESS } from '../services/green-bean.service';
 import { greenBeanAbi } from '../abis/green-bean-abi';
+import { GreenBeanService } from '../services/green-bean.service';
 
 type AlchemyTransaction = {
   removed: boolean;
@@ -40,7 +41,8 @@ const alchemy = new Alchemy({
 
 async function bootstrap() {
   console.log('starting GreenBean indexer');
-  await NestFactory.createApplicationContext(AppModule);
+  const app = await NestFactory.createApplicationContext(AppModule);
+  const greenBeanService = app.get(GreenBeanService);
 
   alchemy.ws.on(
     {
@@ -56,9 +58,12 @@ async function bootstrap() {
         });
         console.log(value);
         if (value.functionName === 'claim') {
-          for (const tokenId of value.args) {
+          for (const tokenId in value.args) {
             console.log(tokenId);
-            this.greenBeanService.updateAzuki({ tokenId, canClaim: false });
+            greenBeanService.updateAzuki({
+              tokenId: parseInt(tokenId),
+              canClaim: false,
+            });
           }
         }
       } catch (err) {
