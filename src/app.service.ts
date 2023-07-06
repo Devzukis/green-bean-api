@@ -9,6 +9,7 @@ export class AppService {
     const unclaimedAzukis = await this.prisma.azuki.findMany({
       where: { canClaim: true },
       select: { tokenId: true },
+      orderBy: { tokenId: 'asc' },
     });
     return { tokenIds: unclaimedAzukis.map((azuki) => azuki.tokenId) };
   }
