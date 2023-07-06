@@ -2,12 +2,13 @@
 require('dotenv').config();
 
 import { NestFactory } from '@nestjs/core';
-import { Alchemy, AlchemySubscription, Network } from 'alchemy-sdk';
+import { AlchemySubscription } from 'alchemy-sdk';
 import { decodeFunctionData } from 'viem';
 import { AppModule } from '../app.module';
 import { GREEN_BEAN_ADDRESS } from '../services/green-bean.service';
 import { greenBeanAbi } from '../abis/green-bean-abi';
 import { GreenBeanService } from '../services/green-bean.service';
+import { alchemy } from '../utils/alchemy';
 
 type AlchemyTransaction = {
   removed: boolean;
@@ -34,11 +35,6 @@ type AlchemyTransaction = {
   };
 };
 
-const alchemy = new Alchemy({
-  apiKey: process.env.ALCHEMY_API_KEY,
-  network: Network.ETH_MAINNET,
-});
-
 async function bootstrap() {
   console.log('starting GreenBean indexer');
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -49,7 +45,7 @@ async function bootstrap() {
       method: AlchemySubscription.MINED_TRANSACTIONS,
       addresses: [{ to: GREEN_BEAN_ADDRESS }],
     },
-    (tx: AlchemyTransaction) => {
+    async (tx: AlchemyTransaction) => {
       try {
         console.log(JSON.stringify(tx));
         const value = decodeFunctionData({
@@ -58,12 +54,16 @@ async function bootstrap() {
         });
         console.log(value);
         if (value.functionName === 'claim') {
-          for (const tokenId in value.args) {
+          const tokenIds = value.args[0];
+          for (let i = 0; i < tokenIds.length; i++) {
+            const tokenId = tokenIds[i];
             console.log(tokenId);
-            greenBeanService.updateAzuki({
-              tokenId: parseInt(tokenId),
+            console.log(BigInt(tokenId).toString());
+            await greenBeanService.updateAzuki({
+              tokenId: parseInt(BigInt(tokenId).toString()),
               canClaim: false,
             });
+            console.log(`tokenId: ${tokenId} claimed a GreenBean`);
           }
         }
       } catch (err) {
