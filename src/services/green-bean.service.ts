@@ -6,6 +6,7 @@ import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 import { greenBeanAbi } from '../abis/green-bean-abi';
 import { PrismaService } from '../prisma.service';
+import { Prisma } from '@prisma/client';
 
 export const GREEN_BEAN_ADDRESS = '0xdfaA1A2d917DF08eA9eAe22Fec2Dd729aA93f97b';
 
@@ -44,16 +45,11 @@ export class GreenBeanService {
     });
   }
 
-  async updateAzuki({
-    tokenId,
-    canClaim,
-  }: {
-    tokenId: number;
-    canClaim: boolean;
-  }) {
+  async updateAzuki(data: Prisma.AzukiUpdateInput) {
+    const tokenId = data.tokenId as number;
     return this.prisma.azuki.update({
       where: { tokenId },
-      data: { canClaim },
+      data,
     });
   }
 }
