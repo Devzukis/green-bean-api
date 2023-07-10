@@ -1,6 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-
+import { GetRecentClaimsDto } from './dto';
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -13,5 +13,10 @@ export class AppController {
   @Get('v1/can-claim')
   getAzukisThatCanClaim() {
     return this.appService.getAllCanClaimAzukis();
+  }
+
+  @Get('/v1/recent-claims')
+  getAzukisThatClaimed(@Query() query: GetRecentClaimsDto) {
+    return this.appService.getRecentClaims(query.take, query.skip);
   }
 }
