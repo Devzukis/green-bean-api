@@ -4,8 +4,9 @@ require('dotenv').config();
 import { NestFactory } from '@nestjs/core';
 import { AlchemySubscription } from 'alchemy-sdk';
 import { decodeFunctionData } from 'viem';
+import * as dayjs from 'dayjs';
 import { AppModule } from '../app.module';
-import { GREEN_BEAN_ADDRESS } from '../services/green-bean.service';
+import { GREEN_BEAN_ADDRESS } from '../constants';
 import { greenBeanAbi } from '../abis/green-bean-abi';
 import { GreenBeanService } from '../services/green-bean.service';
 import { alchemy } from '../utils/alchemy';
@@ -53,15 +54,18 @@ async function bootstrap() {
           data: tx.transaction.input,
         });
         console.log(value);
+        const block = await alchemy.core.getBlock(tx.transaction.blockNumber);
+        console.log(JSON.stringify(block));
         if (value.functionName === 'claim') {
           const tokenIds = value.args[0];
           for (let i = 0; i < tokenIds.length; i++) {
             const tokenId = tokenIds[i];
-            console.log(tokenId);
-            console.log(BigInt(tokenId).toString());
             await greenBeanService.updateAzuki({
               tokenId: parseInt(BigInt(tokenId).toString()),
               canClaim: false,
+              claimedAt: dayjs.unix(block.timestamp).toISOString(),
+              txHashClaimed: tx.transaction.hash,
+              blockClaimed: tx.transaction.blockNumber,
             });
             console.log(`tokenId: ${tokenId} claimed a GreenBean`);
           }
