@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { NftTokenType } from 'alchemy-sdk';
-import { AppModule } from '../app.module';
-import { GreenBeanService } from '../services/green-bean.service';
-import { alchemy } from '../utils/alchemy';
-import { AZUKI_CONTRACT_ADDRESS } from '../constants';
+import { AppModule } from '../../app.module';
+import { GreenBeanService } from '../../services/green-bean.service';
+import { alchemy } from '../../utils/alchemy';
+import { AZUKI_CONTRACT_ADDRESS } from '../../constants';
 
+// store the thumbnail images for all Azukis
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const greenBeanService = app.get(GreenBeanService);
