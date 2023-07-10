@@ -2,20 +2,11 @@
 require('dotenv').config();
 
 import { Injectable } from '@nestjs/common';
-import { createPublicClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
+import { Prisma } from '@prisma/client';
 import { greenBeanAbi } from '../abis/green-bean-abi';
 import { PrismaService } from '../prisma.service';
-import { Prisma } from '@prisma/client';
-
-export const GREEN_BEAN_ADDRESS = '0xdfaA1A2d917DF08eA9eAe22Fec2Dd729aA93f97b';
-
-const client = createPublicClient({
-  chain: mainnet,
-  transport: http(
-    `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
-  ),
-});
+import { client } from '../utils/client';
+import { GREEN_BEAN_ADDRESS } from '../constants';
 
 @Injectable()
 export class GreenBeanService {
