@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { decodeFunctionData } from 'viem';
 import * as dayjs from 'dayjs';
-import { AppModule } from '../../app.module';
-import { GREEN_BEAN_ADDRESS } from '../../constants';
-import { client } from '../../utils/client';
-import { greenBeanAbi } from '../../abis/green-bean-abi';
-import { GreenBeanService } from '../../services/green-bean.service';
+import { AppModule } from '../../../app.module';
+import { GREEN_BEAN_ADDRESS } from '../../../constants';
+import { client } from '../../../utils/client';
+import { greenBeanAbi } from '../../../abis/green-bean-abi';
+import { GreenBeanService } from '../../../services/green-bean.service';
 
 // store the thumbnail images for all Azukis
 async function bootstrap() {
