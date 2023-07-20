@@ -23,7 +23,7 @@ export class AppService {
   async getRecentClaims(take = 100, skip = 0) {
     return await this.prisma.azuki.findMany({
       where: { claimedAt: { not: null } },
-      select: { tokenId: true, thumbnailUrl: true, txHashClaimed: true },
+      select: { tokenId: true, thumbnailUrl: true, txHashClaimed: true, claimedAt: true },
       orderBy: [{ claimedAt: 'desc' }, { tokenId: 'asc' }],
       take,
       skip,
