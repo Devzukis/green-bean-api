@@ -22,6 +22,13 @@ export class GreenBeanService {
     return data[0];
   }
 
+  async getAzukis({ canClaim }: Prisma.AzukiSelect) {
+    return this.prisma.azuki.findMany({
+      where: { canClaim },
+      orderBy: { tokenId: 'asc' },
+    });
+  }
+
   async createAzuki({
     tokenId,
     canClaim,
